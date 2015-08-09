@@ -2,6 +2,7 @@
 #include <WiFiClient.h> 
 #include <ESP8266WebServer.h>
 #include <EEPROM.h>
+#include <ESP8266mDNS.h>
 
 /* Set these to your desired credentials. */
 const char *softAP_ssid = "ESPap";
