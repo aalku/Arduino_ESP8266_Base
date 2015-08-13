@@ -1,15 +1,21 @@
 #include <ESP8266WiFi.h>
 #include <WiFiClient.h> 
 #include <ESP8266WebServer.h>
-#include <EEPROM.h>
+#include <DNSServer.h>
 #include <ESP8266mDNS.h>
+#include <EEPROM.h>
 
 /* Set these to your desired credentials. */
-const char *softAP_ssid = "ESPap";
-const char *softAP_password = "thereisnospoon";
+const char *softAP_ssid = "ESP_ap";
+const char *softAP_password = "12345678";
 
 char ssid[32] = "";
 char password[32] = "";
+
+const byte DNS_PORT = 53;
+IPAddress apIP(192, 168, 4, 1);
+IPAddress netMsk(255, 255, 255, 0);
+DNSServer dnsServer;
 
 ESP8266WebServer server(80);
 
@@ -104,11 +110,16 @@ void setup() {
   Serial.println();
   Serial.print("Configuring access point...");
   /* You can remove the password parameter if you want the AP to be open. */
+  WiFi.softAPConfig(apIP, apIP, netMsk);
   WiFi.softAP(softAP_ssid, softAP_password);
   delay(500);
   Serial.print("AP IP address: ");
   Serial.println(WiFi.softAPIP());
+  
+  dnsServer.setErrorReplyCode(DNSReplyCode::NoError);
+  dnsServer.start(DNS_PORT, "*", apIP);
   server.on("/", handleRoot);
+  server.on("/generate_204", handleRoot);  //Android captive portal
   server.on("/wifi", handleWifi);
   server.on("/wifisave", handleWifiSave);
   server.onNotFound ( handleNotFound );
@@ -166,7 +177,8 @@ void loop() {
       }
     }
   }
-
+  //DNS
+  dnsServer.processNextRequest();
   //HTTP
   server.handleClient();
 }
