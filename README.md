@@ -8,3 +8,7 @@ You can extend it to add other features based on HTTP or not.
 This project uses ESP8266 as an Arduino microcontroller thanks to this Arduino core https://github.com/esp8266/Arduino
 
 You need Arduino with that extension to compile and install this project. Follow their instructions and then simply use this as sketch.
+
+original-esp8266-arduino branch uses original esp8266 arduino https://github.com/esp8266/Arduino/
+
+master branch currently need some library changes here https://github.com/aalku/Arduino
